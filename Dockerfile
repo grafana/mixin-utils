@@ -12,5 +12,6 @@ RUN apt-get update; \
 COPY ./common.sh /
 COPY ./entrypoint.sh /
 COPY ./util.libsonnet /
+COPY ./grr.libsonnet /
 
 ENTRYPOINT [ "/entrypoint.sh" ]

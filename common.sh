@@ -74,6 +74,14 @@ download_cloud_integration() {
   fi
 }
 
+integration_metadata() {
+  local abspath
+  local property
+  abspath="${1}"
+  property="${2}"
+  jq -r ".${property}" "${abspath}/metadata.json"
+}
+
 # Mixin stuff
 mixin_usage() {
   echo "Mixin Usage"
@@ -81,21 +89,29 @@ mixin_usage() {
 
 prep_mixin() {
   local relative_path
+  local dashboardFolder
+  local ruleNamespace
   relative_path="${1}"
+  dashboardFolder="${DASHBOARD_FOLDER:-Mixin-Utils}"
+  ruleNamespace="${RULE_NAMESPACE:-mixin-utils}"
   rm -rf /tmp/mixin
   mkdir -p /tmp/mixin
   cp -R "${root_path}/${relative_path}/"* "/tmp/mixin/"
   # TODO: Total, awful, hideous hack for cloud integrations that have this one weird dependency. See comment in included file.
   cp /util.libsonnet /tmp/
+  cp /grr.libsonnet /tmp/mixin
+  sed -i "s/{{DASHBOARD_FOLDER}}/${dashboardFolder}/g" /tmp/mixin/grr.libsonnet
+  sed -i "s/{{RULE_NAMESPACE}}/${ruleNamespace}/g" /tmp/mixin/grr.libsonnet
   cd /tmp/mixin || exit
   jb install
+  jb install github.com/grafana/jsonnet-libs/grizzly@3517c7c0889d0cb29d89b5e67e03f11d30bc99d3
 }
 
 show_mixin() {
-  grr show /tmp/mixin/mixin.libsonnet
+  grr show /tmp/mixin/grr.libsonnet
 }
 
 install_mixin() {
   # Let grr do it's validation (or lack thereof) of env vars.
-  grr apply /tmp/mixin/mixin.libsonnet
+  grr apply /tmp/mixin/grr.libsonnet
 }
