@@ -2,6 +2,10 @@
 
 root_path="/var/lib/mixin"
 
+usage() {
+  echo "Usage"
+}
+
 fix_fs_perms() {
   local abs_path
   local hostuid
@@ -14,6 +18,10 @@ fix_fs_perms() {
 }
 
 # Cloud integrations stuff
+integrations_usage() {
+  echo "Integrations Usage"
+}
+
 fetch_cloud_integration_list() {
   curl -Ls https://storage.googleapis.com/storage/v1/b/cloud-integration-releases/o  
 }
@@ -67,6 +75,10 @@ download_cloud_integration() {
 }
 
 # Mixin stuff
+mixin_usage() {
+  echo "Mixin Usage"
+}
+
 prep_mixin() {
   local relative_path
   relative_path="${1}"
@@ -81,4 +93,9 @@ prep_mixin() {
 
 show_mixin() {
   grr show /tmp/mixin/mixin.libsonnet
+}
+
+install_mixin() {
+  # Let grr do it's validation (or lack thereof) of env vars.
+  grr apply /tmp/mixin/mixin.libsonnet
 }
