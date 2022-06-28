@@ -11,5 +11,15 @@ local dashboardId = std.asciiLower(std.strReplace(dashboardFolder, ' ', '-'));
     grr.resource.addMetadata('folder', dashboardId)
     for fname in std.objectFields(mixin.grafanaDashboards)
   ],
-  prometheus_rule_groups: std.map(function(g) grr.rule_group.new(ruleNamespace, g.name, g), mixin.prometheusRules.groups + mixin.prometheusAlerts.groups),
-}
+} +
+if std.objectHasAll(mixin, 'prometheusRules') && std.length(mixin.prometheusRules) > 0 then
+  {
+    prometheus_rule_groups+: std.map(function(g) grr.rule_group.new(ruleNamespace, g.name, g), mixin.prometheusRules.groups),
+  }
+else
+  {}
+  +
+  if std.objectHasAll(mixin, 'prometheusAlerts') && std.length(mixin.prometheusAlerts) > 0 then
+    {
+      prometheus_rule_groups+: std.map(function(g) grr.rule_group.new(ruleNamespace, g.name, g), mixin.prometheusAlerts.groups),
+    } else {}
