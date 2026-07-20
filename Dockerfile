@@ -1,4 +1,4 @@
-FROM golang:1.18
+FROM golang:1.18@sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da
 
 RUN go install -a github.com/monitoring-mixins/mixtool/cmd/mixtool@master
 RUN go install github.com/google/go-jsonnet/cmd/jsonnet@latest
